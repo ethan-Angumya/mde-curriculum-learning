@@ -1,3 +1,8 @@
+# Add this at the top of your train.py
+import os
+if 'COLAB_GPU' in os.environ:
+    os.environ['TORCH_HUB'] = '/content/torch_hub'  # Avoid repeated downloads
+    
 import yaml
 import torch  # This was missing
 from torchvision import transforms
