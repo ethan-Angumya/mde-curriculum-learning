@@ -1,0 +1,14 @@
+# Core Requirements
+torch
+torchvision
+numpy
+opencv-python
+Pillow
+
+# Curriculum Learning
+scikit-image
+pyyaml
+tqdm
+
+# Web Interface 
+flask
