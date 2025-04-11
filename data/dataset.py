@@ -18,5 +18,8 @@ class UAVDepthDataset(Dataset):
         img_path = os.path.join(self.image_dir, self.image_files[idx])
         image = Image.open(img_path).convert('RGB')
         if self.transform:
-            image = self.transform(image)
+            image = self.transform(image)  # Should return tensor
+        else:
+            # Add default transform if none provided
+            image = torch.from_numpy(np.array(image)).float().permute(2, 0, 1)/255.0
         return image, self.image_files[idx]
