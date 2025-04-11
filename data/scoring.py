@@ -11,23 +11,25 @@ class DifficultyScorer:
             'texture': self._texture_score
         }
     
-    def compute_difficulty(self, image_tensor, weights=None):
-        """Compute difficulty scores for a PyTorch tensor image"""
-        # Convert tensor to numpy and permute dimensions
-        image_np = image_tensor.numpy().transpose(1, 2, 0)
-        image_np = (image_np * 255).astype(np.uint8)  # Scale to 0-255
+    def compute_difficulty(self, image_input):
+        """Handle both tensor and numpy inputs"""
+        if isinstance(image_input, torch.Tensor):
+            # Convert tensor to numpy properly
+            image_np = image_input.cpu().detach().numpy().transpose(1, 2, 0)
+            image_np = (image_np * 255).astype(np.uint8)
+        else:
+            # Assume numpy input
+            image_np = np.array(image_input)
+            if image_np.shape[2] != 3:  # Ensure RGB format
+                image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)
         
-        if weights is None:
-            weights = {'blur': 0.4, 'edges': 0.3, 'entropy': 0.2, 'texture': 0.1}
-        
+        # Rest of your scoring logic...
         scores = {}
-        total = 0.0
         for name, method in self.methods.items():
-            score = method(image_np)
-            scores[name] = score
-            total += weights.get(name, 0) * score
+            scores[name] = method(image_np)
         
-        return total / sum(weights.values()), scores
+        total = scores['blur']*0.4 + scores['edges']*0.3 + scores['entropy']*0.2
+        return total, scores
     
     def _blur_score(self, image):
         """Compute blur metric (Laplacian variance)"""
