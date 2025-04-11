@@ -1,11 +1,17 @@
+# Override config for Colab
+%%writefile configs/model_params.yaml
 model:
   encoder: resnet50
   pretrained: True
   min_depth: 0.1
   max_depth: 100.0
-
 training:
-  batch_size: 16
+  batch_size: 8  # Reduce if OOM occurs
   num_epochs: 20
   learning_rate: 0.0001
-  weight_decay: 0.0005
+
+# Start training
+!python train.py 2>&1 | tee training.log
+
+# Save results
+!cp training.log "/content/drive/MyDrive/Colab Data/mde-results.log"
