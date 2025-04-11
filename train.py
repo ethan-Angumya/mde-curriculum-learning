@@ -40,4 +40,8 @@ def main():
     losses = trainer.train(10000)
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    finally:
+        if 'COLAB_GPU' in os.environ:
+            torch.save(model.state_dict(), '/content/drive/MyDrive/Colab Data/mde-model.pth')
