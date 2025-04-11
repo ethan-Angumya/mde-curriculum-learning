@@ -4,9 +4,8 @@ import torch
 from torch import nn
 
 class CurriculumTrainer:
-    """Handles the curriculum learning training process"""
-    
-    def __init__(self, model, dataset, scorer, pacing_fn, device='cuda'):
+    def __init__(self, model, dataset, scorer, pacing_fn, device=None):
+        
         """
         Args:
             model: The depth estimation model
@@ -15,11 +14,11 @@ class CurriculumTrainer:
             pacing_fn: Pacing function for curriculum
             device: Training device (cuda/cpu)
         """
-        self.model = model.to(device)
         self.dataset = dataset
         self.scorer = scorer
         self.pacing_fn = pacing_fn
-        self.device = device
+        self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = model.to(self.device)
         
         # Pre-compute difficulties for all images
         self.difficulties = self._compute_difficulties()
