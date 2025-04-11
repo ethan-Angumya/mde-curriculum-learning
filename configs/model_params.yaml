@@ -1,5 +1,3 @@
-# Override config for Colab
-%%writefile configs/model_params.yaml
 model:
   encoder: resnet50
   pretrained: True
